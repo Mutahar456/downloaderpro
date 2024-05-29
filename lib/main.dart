@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:downloaderpro/home.dart';
-import 'home.dart';  // Import the HomePageScreen
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:downloaderpro/splash_screen.dart'; // Import your SplashScreen
+import 'package:downloaderpro/home.dart'; // Import the HomePageScreen
 import 'package:downloaderpro/url_input_page.dart';
 import 'package:downloaderpro/search.dart';
+import 'package:downloaderpro/settings_page.dart'; // Import the SettingsPage
 
 void main() {
   runApp(MyApp());
@@ -37,7 +38,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Mp3 Downloader',
       debugShowCheckedModeBanner: false,
       theme: _themeData,
-      home: MyAppStateful(),
+      home: SplashScreen(), // Display SplashScreen as the initial screen
     );
   }
 }
@@ -51,7 +52,7 @@ class _MyAppStatefulState extends State<MyAppStateful> {
   int currentTabIndex = 0;
 
   final List<Widget> tabs = [
-    HomePageScreen(),  // HomePageScreen
+    HomePageScreen(), // HomePageScreen
     URLInputPage(),
     Search(),
   ];
@@ -61,28 +62,6 @@ class _MyAppStatefulState extends State<MyAppStateful> {
     return Scaffold(
       appBar: null,
       body: tabs[currentTabIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentTabIndex,
-        onTap: (index) {
-          setState(() {
-            currentTabIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.download_for_offline),
-            label: 'Download',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.music_note_rounded),
-            label: 'Search Music',
-          ),
-        ],
-      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -99,36 +78,7 @@ class _MyAppStatefulState extends State<MyAppStateful> {
                 ),
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 0;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.download),
-              title: Text('Mp3 Downloader'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 1;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.search),
-              title: Text('Video Search'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 2;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
+
           ],
         ),
       ),

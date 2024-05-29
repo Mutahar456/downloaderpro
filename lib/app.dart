@@ -33,17 +33,17 @@ class MainApp extends StatelessWidget {
           unselectedItemColor: Colors.white70,
         ),
       ),
-      home: MyAppStateful(),
+      home: HomePageScreen(),
     );
   }
 }
 
-class MyAppStateful extends StatefulWidget {
+class HomePageScreen extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _HomePageScreenState createState() => _HomePageScreenState();
 }
 
-class _MyAppState extends State<MyAppStateful> {
+class _HomePageScreenState extends State<HomePageScreen> {
   int currentTabIndex = 0;
 
   final List<Widget> tabs = [
@@ -57,28 +57,6 @@ class _MyAppState extends State<MyAppStateful> {
     return Scaffold(
       appBar: null,
       body: tabs[currentTabIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentTabIndex,
-        onTap: (index) {
-          setState(() {
-            currentTabIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.download_for_offline),
-            label: 'Download',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.music_note_rounded),
-            label: 'Search Music',
-          ),
-        ],
-      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -95,36 +73,7 @@ class _MyAppState extends State<MyAppStateful> {
                 ),
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 0;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.download),
-              title: Text('Mp3 Downloader'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 1;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.search),
-              title: Text('Video Search'),
-              onTap: () {
-                setState(() {
-                  currentTabIndex = 2;
-                });
-                Navigator.pop(context); // close the drawer
-              },
-            ),
+
           ],
         ),
       ),

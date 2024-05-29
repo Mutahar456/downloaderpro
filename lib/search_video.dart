@@ -8,8 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as path;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:path/path.dart' as path;
-
 
 class SearchVideo extends StatefulWidget {
   const SearchVideo({Key? key}) : super(key: key);
@@ -63,7 +61,6 @@ class _SearchState extends State<SearchVideo> {
     } finally {
       setState(() {
         _isLoading = false;
-
       });
     }
   }
@@ -179,7 +176,6 @@ class _SearchState extends State<SearchVideo> {
     }
   }
 
-
   void _showNotification(String fileName) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -198,139 +194,141 @@ class _SearchState extends State<SearchVideo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Search",
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          title: Text(
+            "Search",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.black,
         ),
         backgroundColor: Colors.black,
-      ),
-      backgroundColor: Colors.grey,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.0),
-              color: Colors.black87,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search, color: Colors.white),
-                          onPressed: () {
-                            _searchMusic(_searchController.text);
-                          },
-                        ),
-                      ),
-                      onSubmitted: (_) {
+        body: SafeArea(
+          child: Column(
+              children: [
+          Container(
+          padding: EdgeInsets.all(8.0),
+          color: Colors.black,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search, color: Colors.white),
+                      onPressed: () {
                         _searchMusic(_searchController.text);
                       },
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                ],
-              ),
-            ),
-            if (_isLoading)
-              Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _videoResult.length,
-                  itemBuilder: (context, index) {
-                    final video = _videoResult[index];
-                    final title = video['title'] ?? 'No title';
-                    final artists = (video['artists'] as List?)
-                        ?.map((artist) => artist['name'] as String?)
-                        .where((name) => name != null)
-                        .join(', ') ?? 'Unknown artist';
-                    final thumbnails = video['thumbnails'] as List?;
-                    final thumbnailUrl = thumbnails != null && thumbnails.isNotEmpty
-                        ? thumbnails[0]['url'] as String? ?? ''
-                        : '';
-                    final videoId = video['videoId'] as String?;
-                    final streamingUrl = 'https://www.youtube.com/watch?v=$videoId';
-
-                    return Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.all(8.0),
-                      color: Colors.black87,
-                      child: Column(
-                        children: [
-                          if (thumbnailUrl.isNotEmpty)
-                            Image.network(
-                              thumbnailUrl,
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ListTile(
-                            title: Text(
-                              title,
-                              style: TextStyle(color: Colors.white),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            subtitle: Text(
-                              artists,
-                              style: TextStyle(color: Colors.white),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.play_arrow, color: Colors.white),
-                                  onPressed: () {
-                                    if (videoId != null) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => VideoPlayerPage(videoId: videoId),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.download, color: Colors.white),
-                                  onPressed: () {
-                                    if (videoId != null) {
-                                      _downloadFile(streamingUrl, title, context, index);
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (_videoResult[index]['isDownloading'] == true)
-                            LinearProgressIndicator(
-                              value: _downloadProgress,
-                              backgroundColor: Colors.grey,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                            ),
-                        ],
-                      ),
-                    );
+                  onSubmitted: (_) {
+                    _searchMusic(_searchController.text);
                   },
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-          ],
+            ],
+          ),
+        ),
+        if (_isLoading)
+    Expanded(
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.green), // Neon green color
         ),
       ),
+    )
+    else
+    Expanded(
+    child: ListView.builder(
+    itemCount: _videoResult.length,
+      itemBuilder: (context, index) {
+        final video = _videoResult[index];
+        final title = video['title'] ?? 'No title';
+        final artists = (video['artists'] as List?)
+            ?.map((artist) => artist['name'] as String?)
+            .where((name) => name != null)
+            .join(', ') ?? 'Unknown artist';
+        final thumbnails = video['thumbnails'] as List?;
+        final thumbnailUrl = thumbnails != null && thumbnails.isNotEmpty
+            ? thumbnails[0]['url'] as String? ?? ''
+            : '';
+        final videoId = video['videoId'] as String?;
+        final streamingUrl = 'https://www.youtube.com/watch?v=$videoId';
+
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: 8.0),
+          padding: EdgeInsets.all(8.0),
+          color: Colors.black87,
+          child: Column(
+            children: [
+              if (thumbnailUrl.isNotEmpty)
+                Image.network(
+                  thumbnailUrl,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ListTile(
+                title: Text(
+                  title,
+                  style: TextStyle(color: Colors.white),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  artists,
+                  style: TextStyle(color: Colors.white),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.play_arrow, color: Colors.white),
+                      onPressed: () {
+                        if (videoId != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoPlayerPage(videoId: videoId),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.download, color: Colors.white),
+                      onPressed: () {
+                        if (videoId != null) {
+                          _downloadFile(streamingUrl, title, context, index);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              if (_videoResult[index]['isDownloading'] == true)
+                LinearProgressIndicator(
+                  value: _downloadProgress,
+                  backgroundColor: Colors.grey,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
+            ],
+          ),
+        );
+      },
+    ),
+    ),
+              ],
+          ),
+        ),
     );
   }
 }

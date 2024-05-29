@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:path/path.dart'; // Add this import
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
-import 'video_player_page.dart';  // Import the VideoPlayerPage
+import 'video_player_page.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoDetailsPage extends StatefulWidget {
@@ -93,12 +93,12 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey, // Set the background color
+      backgroundColor: Colors.black87, // Set the background color to neon
       appBar: AppBar(
         backgroundColor: Colors.black, // Set the background color to blue
         title: Text(
           'Video Details',
-          style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold), // Set text color to white
+          style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold), // Set text color to neon green
         ),
         iconTheme: IconThemeData(
             color: Colors.white), // Set icon (back button) color to white
@@ -113,7 +113,7 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
             SizedBox(height: 8),
             Text(
               widget.videoData['description'],
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), // Set text color to white
             ),
             SizedBox(height: 8),
             Text.rich(
@@ -121,11 +121,11 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
                 children: [
                   TextSpan(
                     text: 'Author: ',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // Set text color to white
                   ),
                   TextSpan(
                     text: '${widget.videoData['author']['name']}',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -136,11 +136,11 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
                 children: [
                   TextSpan(
                     text: 'Views: ',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // Set text color to white
                   ),
                   TextSpan(
                     text: '${widget.videoData['stats']['views']}',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -151,11 +151,11 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
                 children: [
                   TextSpan(
                     text: 'Published: ',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // Set text color to white
                   ),
                   TextSpan(
                     text: '${widget.videoData['stats']['publishedText']}',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -163,13 +163,14 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
             SizedBox(height: 16),
             Text(
               'Downloading:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white), // Set text color to white
             ),
             SizedBox(height: 8),
             _downloading
                 ? LinearProgressIndicator(
               value: _downloadProgress,
               minHeight: 20,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Set progress bar color to neon green
             )
                 : Container(),
             SizedBox(height: 8),

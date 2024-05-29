@@ -62,7 +62,7 @@ class _URLInputPageState extends State<URLInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey, // Set the background color
+      backgroundColor: Colors.black87, // Set the background color to neon
       appBar: AppBar(
         backgroundColor: Colors.black, // Set the background color to black
         title: Row(
@@ -70,14 +70,14 @@ class _URLInputPageState extends State<URLInputPage> {
             SizedBox(width: 10),
             Text(
               'Download Songs ',
-              style: TextStyle(color: Colors.white70,fontWeight: FontWeight.bold), // Set text color to white
+              style: TextStyle(color: Colors.greenAccent,fontWeight: FontWeight.bold), // Set text color to neon green
             ),
           ],
         ),
         leading: IconButton(
-          icon: Icon(Icons.menu),
+          icon: Icon(Icons.arrow_back), // Change menu button to back button
           onPressed: () {
-            Scaffold.of(context).openDrawer();
+            Navigator.of(context).pop();
           },
         ),
         iconTheme: IconThemeData(
@@ -99,12 +99,14 @@ class _URLInputPageState extends State<URLInputPage> {
             ),
             SizedBox(height: 20),
             _isFetching
-                ? CircularProgressIndicator() // Show CircularProgressIndicator if fetching
+                ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Set CircularProgressIndicator color to neon green
+            )
                 : ElevatedButton(
               onPressed: _fetchVideoDetails,
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.black54), // Blue background color
+                    Colors.blueAccent), // Blue background color
                 foregroundColor: MaterialStateProperty.all<Color>(
                     Colors.white), // White text color
               ),

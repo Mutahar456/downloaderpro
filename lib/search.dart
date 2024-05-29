@@ -12,8 +12,6 @@ import 'package:path/path.dart'; // Add this import
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
-
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
 
@@ -169,178 +167,188 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Search",
-          style: TextStyle(color: Colors.white), // Setting text color to white
+        appBar: AppBar(
+          title: Text(
+            "Search",
+            style: TextStyle(color: Colors.white), // Setting text color to white
+          ),
+          backgroundColor: Colors.black, // Setting app bar background color to black
         ),
-        backgroundColor: Colors.black, // Setting app bar background color to black
-      ),
-      backgroundColor: Colors.blueGrey.shade300,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.0),
-              color: Colors.black87, // Setting search bar background color to dark gray
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search, color: Colors.white),
-                          onPressed: () {
-                            _searchMusic(_searchController.text);
-                            _saveSearchHistory(_searchController.text);
-                          },
-                        ),
-                      ),
-                      onSubmitted: (_) {
+        backgroundColor: Colors.black, // Setting background color to black
+        body: SafeArea(
+          child: Column(
+              children: [
+          Container(
+          padding: EdgeInsets.all(8.0),
+          color: Colors.black, // Setting search bar background color to black
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.greenAccent), // Neon green accent
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search, color: Colors.white),
+                      onPressed: () {
                         _searchMusic(_searchController.text);
                         _saveSearchHistory(_searchController.text);
                       },
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                ],
-              ),
-            ),
-            if (_isLoading)
-              Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _videoResult.length,
-                  itemBuilder: (context, index) {
-                    final video = _videoResult[index];
-                    final title = video['title'] ?? 'No title';
-                    final artists = (video['artists'] as List?)
-                        ?.map((artist) => artist['name'] as String?)
-                        .where((name) => name != null)
-                        .join(', ') ?? 'Unknown artist';
-                    final thumbnails = video['thumbnails'] as List?;
-                    final thumbnailUrl = thumbnails != null && thumbnails.isNotEmpty
-                        ? thumbnails[0]['url'] as String? ?? ''
-                        : '';
-                    final videoId = video['videoId'] as String?;
-                    final isLoading = video['isLoading'] as bool? ?? false;
-
-                    return Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.all(8.0),
-                      color: Colors.black87, // Setting item background color to dark gray
-                      child: ListTile(
-                        leading: thumbnailUrl.isNotEmpty
-                            ? Image.network(
-                          thumbnailUrl,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        )
-                            : SizedBox(width: 80, height: 80), // Fixed width and height for thumbnail
-                        title: Text(
-                          title,
-                          style: TextStyle(color: Colors.white),
-                          maxLines: 2, // Maximum 2 lines for title
-                          overflow: TextOverflow.ellipsis, // Overflow ellipsis for long titles
-                        ),
-                        subtitle: Text(
-                          artists,
-                          style: TextStyle(color: Colors.white),
-                          maxLines: 1, // Maximum 1 line for artists
-                          overflow: TextOverflow.ellipsis, // Overflow ellipsis for long artists names
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            isLoading
-                                ? CircularProgressIndicator()
-                                : IconButton(
-                              icon: Icon(
-                                _isPlaying && _currentStreamUrl == videoId
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                              onPressed: () async {
-                                if (videoId == null) {
-                                  print('Error: videoId is null');
-                                  return;
-                                }
-
-                                if (_isPlaying && _currentStreamUrl == videoId) {
-                                  await _audioPlayer.pause();
-                                  setState(() {
-                                    _isPlaying = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    _videoResult[index]['isLoading'] = true;
-                                  });
-                                  final streamUrl = await _getStreamUrl(videoId);
-                                  if (streamUrl != null) {
-                                    await _audioPlayer.play(UrlSource(streamUrl));
-                                    setState(() {
-                                      _isPlaying = true;
-                                      _currentStreamUrl = videoId;
-                                      _videoResult[index]['isLoading'] = false;
-                                    });
-                                  } else {
-                                    print('Error: Stream URL is null');
-                                  }
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.download,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                if (videoId != null) {
-                                  _downloadFile(videoId, title, context);
-                                } else {
-                                  print('Error: videoId is null');
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        onTap: () async {
-                          if (videoId != null) {
-                            final streamUrl = await _getStreamUrl(videoId);
-                            if (streamUrl != null) {
-                              await _audioPlayer.play(UrlSource(streamUrl));
-                              setState(() {
-                                _isPlaying = true;
-                                _currentStreamUrl = videoId;
-                              });
-                            } else {
-                              print('Error: Stream URL is null');
-                            }
-                          } else {
-                            print('Error: videoId is null');
-                          }
-                        },
-                      ),
-                    );
+                  onSubmitted: (_) {
+                    _searchMusic(_searchController.text);
+                    _saveSearchHistory(_searchController.text);
                   },
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-          ],
+            ],
+          ),
+        ),
+        if (_isLoading)
+    Expanded(
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Neon green accent
         ),
       ),
+    )
+    else
+    Expanded(
+    child: ListView.builder(
+    itemCount: _videoResult.length,
+    itemBuilder: (context, index) {
+      final video = _videoResult[index];
+      final title = video['title'] ?? 'No title';
+      final artists = (video['artists'] as List?)
+          ?.map((artist) => artist['name'] as String?)
+          .where((name) => name != null)
+          .join(', ') ?? 'Unknown artist';
+      final thumbnails = video['thumbnails'] as List?;
+      final thumbnailUrl = thumbnails != null && thumbnails.isNotEmpty
+          ? thumbnails[0]['url'] as String? ?? ''
+          : '';
+      final videoId = video['videoId'] as String?;
+      final isLoading = video['isLoading'] as bool? ?? false;
+
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.all(8.0),
+        color: Colors.black87, // Setting item background color to black
+        child: ListTile(
+          leading: thumbnailUrl.isNotEmpty
+              ? Image.network(
+            thumbnailUrl,
+            width: 80,
+            height: 80,
+            fit: BoxFit.cover,
+          )
+              : SizedBox(width: 80, height: 80), // Fixed width and height for thumbnail
+          title: Text(
+            title,
+            style: TextStyle(color: Colors.white),
+            maxLines: 2, // Maximum 2 lines for title
+            overflow: TextOverflow.ellipsis, // Overflow ellipsis for long titles
+          ),
+          subtitle: Text(
+            artists,
+            style: TextStyle(color: Colors.white),
+            maxLines: 1, // Maximum 1 line for artists
+            overflow: TextOverflow.ellipsis, // Overflow ellipsis for long artists names
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              isLoading
+                  ? CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Neon green accent
+              )
+                  : IconButton(
+                icon: Icon(
+                  _isPlaying && _currentStreamUrl == videoId
+                      ? Icons.pause
+                      : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                onPressed: () async {
+                  if (videoId == null) {
+                    print('Error: videoId is null');
+                    return;
+                  }
+
+                  if (_isPlaying && _currentStreamUrl == videoId) {
+                    await _audioPlayer.pause();
+                    setState(() {
+                      _isPlaying = false;
+                    });
+                  } else {
+                    setState(() {
+                      _videoResult[index]['isLoading'] = true;
+                    });
+                    final streamUrl = await _getStreamUrl(videoId);
+                    if (streamUrl != null) {
+                      await _audioPlayer.play(UrlSource(streamUrl));
+                      setState(() {
+                        _isPlaying = true;
+                        _currentStreamUrl = videoId;
+                        _videoResult[index]['isLoading'] = false;
+                      });
+                    } else {
+                      print('Error: Stream URL is null');
+                    }
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.download,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  if (videoId != null) {
+                    _downloadFile(videoId, title, context);
+                  } else {
+                    print('Error: videoId is null');
+                  }
+                },
+              ),
+            ],
+          ),
+          onTap: () async {
+            if (videoId != null) {
+              final streamUrl = await _getStreamUrl(videoId);
+              if (streamUrl != null) {
+                await _audioPlayer.play(UrlSource(streamUrl));
+                setState(() {
+                  _isPlaying = true;
+                  _currentStreamUrl = videoId;
+                });
+              } else {
+                print('Error: Stream URL is null');
+              }
+            } else {
+              print('Error: videoId is null');
+            }
+          },
+        ),
+      );
+    },
+    ),
+    ),
+              ],
+          ),
+        ),
       bottomSheet: _buildMusicPlayer(),
     );
   }
@@ -401,3 +409,4 @@ class _SearchState extends State<Search> {
     }
   }
 }
+

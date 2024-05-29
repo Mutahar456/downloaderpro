@@ -55,56 +55,47 @@ class _YourLibraryState extends State<YourLibrary> {
         backgroundColor: Colors.black,
         body: RefreshIndicator(
           onRefresh: _refreshLibrary,
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
-            ),
+          child: ListView.builder(
             itemCount: _searchHistory.length,
             itemBuilder: (context, index) {
-              return Card(
-                color: Colors.grey[900],
-                child: ListTile(
-                  title: Text(
-                    _searchHistory[index],
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                  leading: Icon(
-                    Icons.history,
-                    color: Colors.yellow,
-                  ),
-                  onTap: () {
-                    // Handle tapping on history item
-                  },
-                  trailing: DeleteButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Confirm'),
-                            content: Text('Are you sure you want to delete this item from history?'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: Text('Delete'),
-                                onPressed: () {
-                                  _removeHistoryItem(index);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
+              return ListTile(
+                title: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _searchHistory[index],
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                    DeleteButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Confirm'),
+                              content: Text('Are you sure you want to delete this item from history?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('Delete'),
+                                  onPressed: () {
+                                    _removeHistoryItem(index);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               );
             },
@@ -141,11 +132,11 @@ class _DeleteButtonState extends State<DeleteButton> with SingleTickerProviderSt
     return IconButton(
       icon: Icon(
         Icons.delete,
-        color: Colors.red,
+        color: Colors.greenAccent, // Neon color
       ),
       onPressed: () {
         widget.onPressed?.call();
-        _controller.forward(from: 0.0);
+        _controller.forward(from: 0.0); // Start the animation
       },
       splashRadius: 20.0,
       splashColor: Colors.transparent,
